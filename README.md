@@ -1,57 +1,65 @@
-# Electrobun Hello World
+# 怎么写
 
-A simple Electrobun app to get you started with the framework.
+一个功能强大的汉字笔顺演示应用，帮助用户学习和掌握汉字的正确书写顺序。
 
-## What You'll See
+## 功能特性
 
-This hello world app demonstrates:
-- **Native Window**: A cross-platform desktop window
-- **Web-based UI**: Modern HTML, CSS, and JavaScript interface
-- **Simple Architecture**: Clean separation between Bun process and UI
+- **汉字笔顺动画**：直观展示汉字的笔画顺序
+- **田字格显示**：可切换田字格背景，辅助正确书写位置
+- **交互式控制**：支持上一笔、下一笔、播放/暂停、重置等操作
+- **多汉字支持**：可以输入多个汉字，依次演示每个汉字的笔顺
+- **笔画演示导出**：支持导出笔画演示的 SVG 图片
+- **跨平台**：基于 Electrobun 框架，可在多个平台运行
 
-## Getting Started
+## 快速开始
 
-1. Install dependencies:
+1. 安装依赖：
    ```bash
    bun install
    ```
 
-2. Run in development mode:
+2. 开发模式运行：
    ```bash
    bun run dev
    ```
 
-3. Build for production:
+3. 生产环境构建：
    ```bash
    bun run build
    ```
 
-## Project Structure
+## 项目结构
 
 ```
 src/
 ├── bun/
-│   └── index.ts      # Main process - creates and manages windows
+│   └── index.ts      # 主进程 - 创建和管理窗口
 └── mainview/
-    ├── index.html    # Your app's UI
-    ├── index.css     # Styles
-    └── index.ts      # View logic
+    ├── index.html    # 应用界面
+    ├── index.css     # 样式文件
+    └── index.ts      # 视图逻辑
 ```
 
-## Next Steps
+## 技术栈
 
-Ready to build something more complex? Check out:
+- **Electrobun**：跨平台桌面应用框架
+- **HanziWriter**：汉字笔顺动画库
+- **TypeScript**：类型安全的 JavaScript 超集
+- **SVG**：用于绘制田字格和笔画
 
-- **[Documentation](https://docs.electrobun.dev)** - Learn about all Electrobun features
-- **[Examples](https://github.com/blackboardsh/electrobun/tree/main/playground)** - See advanced features like RPC, menus, and system tray
-- **[GitHub](https://github.com/blackboardsh/electrobun)** - Star the repo and join the community
+## 核心功能
 
-### Add More Features
+1. **汉字输入**：在输入框中输入汉字，按回车或失焦后自动显示笔顺
+2. **田字格切换**：通过复选框控制是否显示田字格背景
+3. **笔画控制**：使用按钮控制笔画的播放、暂停、前进、后退和重置
+4. **多汉字管理**：点击不同汉字切换控制对象
+5. **导出功能**：生成并下载笔画演示的 SVG 图片
 
-Want to extend this app? Try adding:
-- RPC communication between Bun and webview
-- Native menus and system tray
-- File dialogs and system integration
-- Multiple windows and views
+## 应用场景
 
-Happy building! 🚀
+- **教育教学**：教师用于课堂展示汉字笔顺
+- **个人学习**：学生自学汉字书写
+- **教材制作**：生成笔画演示图片用于教材
+- **文化传播**：向非母语者展示汉字的书写之美
+
+希望这个应用能帮助你更好地学习和理解汉字！ 🎯

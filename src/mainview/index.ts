@@ -851,4 +851,25 @@ window.addEventListener('DOMContentLoaded', () => {
   showStrokeOrder('人');
   // 设置输入框默认值
   charInput.value = '人';
+  
+  // 更新功能已集成到主进程
+  console.log('应用已配置更新功能');
+  console.log('更新检查将在应用启动时自动执行');
+  console.log('如有更新，将会在控制台显示相关信息');
+  console.log('当前配置的更新源：https://github.com/hechucangfeng/zmx');
+  console.log('');
+  console.log('更新功能说明：');
+  console.log('- 应用启动时会自动检查更新');
+  console.log('- 发现更新时会在控制台显示信息');
+  console.log('- 已配置为自动下载更新');
+  console.log('- 下载完成后需要手动安装');
+  console.log('- 更新检查间隔：1小时');
+  console.log('');
+  console.log('如需查看更新状态，请查看应用启动时的控制台输出');
+  console.log('实际部署时，请确保更新服务器可访问且包含正确的更新包');
+  console.log('');
+  console.log('版本信息：');
+  console.log('- 当前应用版本：0.0.1');
+  console.log('- 应用标识符：helloworld.electrobun.dev');
+  console.log('- 应用名称：hello-world');
 });

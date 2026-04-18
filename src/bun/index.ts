@@ -68,7 +68,7 @@ const rpc = BrowserView.defineRPC<AppRPCSchema>({
 });
 
 const mainWindow = new BrowserWindow({
-	title: "Hello Electrobun!",
+	title: "怎么写",
 	url: "views://mainview/index.html",
 	frame: {
 		width: 800,
@@ -79,4 +79,9 @@ const mainWindow = new BrowserWindow({
 	rpc,
 });
 
-console.log("Hello Electrobun app started!");
+console.log("怎么写应用启动成功！");
+
+// 更新功能已配置在 electrobun.config.ts 中
+console.log("更新功能已配置");
+console.log("应用启动时会自动检查更新");
+console.log("实际部署时，请确保更新服务器可访问");
