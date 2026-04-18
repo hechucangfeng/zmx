@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>怎么写字</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    h1 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 24px;
+    }
+    #character-container {
+      width: 300px;
+      height: 300px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    #input-area {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    #char-input {
+      width: 200px;
+      height: 48px;
+      font-size: 24px;
+      text-align: center;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      outline: none;
+    }
+    #char-input:focus {
+      border-color: #4a90d9;
+    }
+    button {
+      height: 48px;
+      padding: 0 24px;
+      font-size: 16px;
+      background: #4a90d9;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #357abd;
+    }
+    #stroke-info {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>怎么写字</h1>
+  <div id="characters-container" style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px;"></div>
+  <div id="input-area">
+    <input type="text" id="char-input" placeholder="输入汉字">
+  </div>
+  <div style="margin-bottom: 16px;">
+    <input type="checkbox" id="grid-toggle">
+    <label for="grid-toggle">显示田字格</label>
+  </div>
+  <div class="controls" style="display: flex; gap: 10px; margin-bottom: 16px; justify-content: center; flex-wrap: wrap;">
+    <button id="prev-btn">◀ 上一笔</button>
+    <button id="play-pause-btn">▶ 播放</button>
+    <button id="next-btn">下一笔 ▶</button>
+    <button id="reset-btn">复位</button>
+    <button id="play-all-btn">全部播放</button>
+    <button id="export-svg-btn">导出笔画演示</button>
+  </div>
+  <div id="stroke-info"></div>
+  <div id="stroke-counter" style="font-size: 16px; color: #666; text-align: center;"></div>
+  
+  <script type="module" src="./index.js"></script>
+</body>
+</html>
