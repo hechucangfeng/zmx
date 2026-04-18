@@ -4,7 +4,7 @@ export default {
 	app: {
 		name: "zenxie",
 		identifier: "zenxie.electrobun.dev",
-		version: "0.0.1",
+		version: "1.0.0",
 	},
 	update: {
 		enabled: true,
@@ -14,6 +14,9 @@ export default {
 		checkInterval: 3600000,
 		autoDownload: true,
 		autoInstall: false,
+	},
+	release: {
+		baseUrl: "https://github.com/hechucangfeng/zmx/releases/download/",
 	},
 	build: {
 		views: {
