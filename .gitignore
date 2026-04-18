@@ -29,3 +29,6 @@ bun.lock
 *.njsproj
 *.sln
 *.sw?
+
+# Data directory
+data/
