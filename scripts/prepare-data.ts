@@ -6,19 +6,34 @@ const outDir = join(import.meta.dir, "../build-data");
 const licenseSrc = join(import.meta.dir, "../hanzi-writer-data/ARPHICPL.TXT");
 const licenseDest = join(outDir, "ARPHICPL.TXT");
 
+const forceRefresh = process.env.FORCE_REFRESH_DATA === "true";
+
 if (!existsSync(srcDir)) {
+	if (existsSync(outDir)) {
+		const dataFiles = readdirSync(outDir).filter((f) => f.endsWith(".json"));
+		if (dataFiles.length > 0) {
+			console.log("源数据目录不存在，使用已有的 build-data");
+			console.log(`build-data 中已有 ${dataFiles.length} 个数据文件`);
+			if (forceRefresh) {
+				console.log("FORCE_REFRESH_DATA=true，强制重新生成...");
+			} else {
+				console.log("如需重新生成，请设置 FORCE_REFRESH_DATA=true");
+				process.exit(0);
+			}
+		}
+	}
 	console.error("源数据目录不存在:", srcDir);
 	console.error("请确保已安装依赖: bun install");
 	process.exit(1);
 }
 
-if (existsSync(outDir)) {
+if (existsSync(outDir) && !forceRefresh) {
 	console.log("清理旧输出目录...");
 	const { rmSync } = require("fs");
 	rmSync(outDir, { recursive: true, force: true });
+} else if (!existsSync(outDir)) {
+	mkdirSync(outDir, { recursive: true });
 }
-
-mkdirSync(outDir, { recursive: true });
 
 if (existsSync(licenseSrc)) {
 	cpSync(licenseSrc, licenseDest);
