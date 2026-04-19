@@ -3,9 +3,12 @@ import { join } from "path";
 
 const srcDir = join(import.meta.dir, "../hanzi-writer-data/data");
 const outDir = join(import.meta.dir, "../build-data");
+const licenseSrc = join(import.meta.dir, "../hanzi-writer-data/ARPHICPL.TXT");
+const licenseDest = join(outDir, "ARPHICPL.TXT");
 
 if (!existsSync(srcDir)) {
 	console.error("源数据目录不存在:", srcDir);
+	console.error("请确保已安装依赖: bun install");
 	process.exit(1);
 }
 
@@ -16,6 +19,13 @@ if (existsSync(outDir)) {
 }
 
 mkdirSync(outDir, { recursive: true });
+
+if (existsSync(licenseSrc)) {
+	cpSync(licenseSrc, licenseDest);
+	console.log("已复制 Arphic Public License 许可证文件");
+} else {
+	console.warn("警告: 未找到 ARPHICPL.TXT 许可证文件");
+}
 
 const files = readdirSync(srcDir).filter((f) => f.endsWith(".json"));
 
