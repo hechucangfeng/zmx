@@ -32,3 +32,4 @@ bun.lock
 
 # Data directory
 data/
+build-data/

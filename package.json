@@ -1,18 +1,20 @@
 {
 	"name": "zenxie",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "怎么写 - 汉字笔顺演示应用",
 	"scripts": {
-		"start": "electrobun dev",
-		"dev": "electrobun dev --watch",
-		"build:dev": "bun install && electrobun build",
-		"build:canary": "electrobun build --env=canary",
-		"build:stable": "electrobun build --env=stable"
+		"prepare-data": "bun run scripts/prepare-data.ts",
+		"start": "bun run prepare-data && electrobun dev",
+		"dev": "bun run prepare-data && electrobun dev --watch",
+		"build:dev": "bun install && bun run prepare-data && electrobun build",
+		"build:canary": "bun run prepare-data && electrobun build --env=canary",
+		"build:stable": "bun run prepare-data && electrobun build --env=stable"
 	},
 	"dependencies": {
 		"electrobun": "1.16.0",
 		"gif.js": "^0.2.0",
-		"hanzi-writer": "^3.7.3"
+		"hanzi-writer": "^3.7.3",
+		"hanzi-writer-data": "^2.0.1"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",

@@ -5,9 +5,8 @@
 
 import HanziWriter from 'hanzi-writer';
 
-/**
- * 笔画导航和播放控制类
- */
+type CharDataLoader = (char: string) => Promise<any>;
+
 export class HanziWriterController {
   private writer: HanziWriter;
   private character: string;
@@ -17,14 +16,15 @@ export class HanziWriterController {
   private isAnimating: boolean = false;
   private isPlaying: boolean = false;
   private playbackTimeout: NodeJS.Timeout | null = null;
+  private charDataLoader: CharDataLoader;
 
-  // 回调函数
   private onStrokeChangeCallback?: (index: number, total: number) => void;
   private onPlayStatusChangeCallback?: (isPlaying: boolean) => void;
 
-  constructor(writer: HanziWriter, character: string) {
+  constructor(writer: HanziWriter, character: string, charDataLoader: CharDataLoader) {
     this.writer = writer;
     this.character = character;
+    this.charDataLoader = charDataLoader;
     this.initializeCharacterData();
   }
 
@@ -33,7 +33,7 @@ export class HanziWriterController {
    */
   private async initializeCharacterData(): Promise<void> {
     try {
-      this.charData = await HanziWriter.loadCharacterData(this.character);
+      this.charData = await this.charDataLoader(this.character);
       this.totalStrokes = this.charData.strokes.length;
       console.log(`✓ 字符 "${this.character}" 加载完成，共 ${this.totalStrokes} 笔`);
       this.notifyStrokeChange();

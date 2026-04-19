@@ -1,29 +1,23 @@
-/**
- * HanziWriter 播放控制集成示例
- * 展示如何在项目中集成播放/暂停和笔画控制功能
- */
-
 import HanziWriter from 'hanzi-writer';
 import { HanziWriterController, HanziWriterUI } from './hanzi-controller';
 
-/**
- * 示例 1: 基础使用
- */
-export function basicExample() {
-  // 创建 HanziWriter 实例
+type CharDataLoader = (char: string) => Promise<any>;
+
+export function basicExample(charDataLoader: CharDataLoader) {
   const writer = HanziWriter.create('character-container', '我', {
     width: 300,
     height: 300,
     padding: 20,
     showOutline: true,
     showCharacter: false,
-    strokeAnimationSpeed: 2
+    strokeAnimationSpeed: 2,
+    charDataLoader: (char: string, onLoad: (data: any) => void, onError: (err?: any) => void) => {
+      charDataLoader(char).then(onLoad).catch(onError);
+    }
   });
 
-  // 创建控制器
-  const controller = new HanziWriterController(writer, '我');
+  const controller = new HanziWriterController(writer, '我', charDataLoader);
 
-  // 绑定按钮
   document.getElementById('next-btn')?.addEventListener('click', () => {
     controller.nextStroke();
   });
@@ -40,7 +34,6 @@ export function basicExample() {
     controller.reset();
   });
 
-  // 监听状态变化
   controller.onStrokeChange((index, total) => {
     const statusEl = document.getElementById('status');
     if (statusEl) {
@@ -51,25 +44,21 @@ export function basicExample() {
   return controller;
 }
 
-/**
- * 示例 2: 使用 UI 辅助类
- */
-export function uiIntegrationExample() {
-  // 创建 HanziWriter 实例
+export function uiIntegrationExample(charDataLoader: CharDataLoader) {
   const writer = HanziWriter.create('character-container', '中', {
     width: 300,
     height: 300,
     padding: 20,
-    showOutline: true
+    showOutline: true,
+    charDataLoader: (char: string, onLoad: (data: any) => void, onError: (err?: any) => void) => {
+      charDataLoader(char).then(onLoad).catch(onError);
+    }
   });
 
-  // 创建控制器
-  const controller = new HanziWriterController(writer, '中');
+  const controller = new HanziWriterController(writer, '中', charDataLoader);
 
-  // 创建 UI 管理器
   const ui = new HanziWriterUI(controller);
 
-  // 注册 UI 元素
   ui.registerElements({
     prevBtn: '#prev-btn',
     playBtn: '#play-btn',
@@ -81,10 +70,7 @@ export function uiIntegrationExample() {
   return { controller, ui };
 }
 
-/**
- * 示例 3: 多字符展示
- */
-export function multiCharacterExample() {
+export function multiCharacterExample(charDataLoader: CharDataLoader) {
   const characters = ['好', '好', '学', '习'];
   const controllers: HanziWriterController[] = [];
 
@@ -95,19 +81,19 @@ export function multiCharacterExample() {
     container.style.marginRight = '20px';
     document.getElementById('characters-container')?.appendChild(container);
 
-    // 创建 writer
     const writer = HanziWriter.create(`char-${index}`, char, {
       width: 200,
       height: 200,
       padding: 15,
-      showOutline: true
+      showOutline: true,
+      charDataLoader: (c: string, onLoad: (data: any) => void, onError: (err?: any) => void) => {
+        charDataLoader(c).then(onLoad).catch(onError);
+      }
     });
 
-    // 创建控制器
-    const controller = new HanziWriterController(writer, char);
+    const controller = new HanziWriterController(writer, char, charDataLoader);
     controllers.push(controller);
 
-    // 为每个字符添加控制按钮
     const controlsDiv = document.createElement('div');
     controlsDiv.style.marginTop = '10px';
     controlsDiv.style.textAlign = 'center';
@@ -134,20 +120,19 @@ export function multiCharacterExample() {
   return controllers;
 }
 
-/**
- * 示例 4: 键盘快捷键支持
- */
-export function keyboardShortcutsExample() {
+export function keyboardShortcutsExample(charDataLoader: CharDataLoader) {
   const writer = HanziWriter.create('character-container', '学', {
     width: 300,
     height: 300,
     padding: 20,
-    showOutline: true
+    showOutline: true,
+    charDataLoader: (char: string, onLoad: (data: any) => void, onError: (err?: any) => void) => {
+      charDataLoader(char).then(onLoad).catch(onError);
+    }
   });
 
-  const controller = new HanziWriterController(writer, '学');
+  const controller = new HanziWriterController(writer, '学', charDataLoader);
 
-  // 键盘事件
   document.addEventListener('keydown', (event) => {
     switch (event.key) {
       case 'ArrowLeft':
@@ -178,31 +163,27 @@ export function keyboardShortcutsExample() {
   return controller;
 }
 
-/**
- * 示例 5: 与现有 mainview/index.ts 集成
- */
-export function integrateWithMainview(character: string) {
-  // 假设已有一个 div 容器
+export function integrateWithMainview(character: string, charDataLoader: CharDataLoader) {
   const container = document.getElementById('character-target-div');
   if (!container) {
     console.error('容器不存在');
     return;
   }
 
-  // 创建 writer
   const writer = HanziWriter.create(container, character, {
     width: 300,
     height: 300,
     padding: 20,
     showOutline: true,
     showCharacter: false,
-    strokeAnimationSpeed: 2
+    strokeAnimationSpeed: 2,
+    charDataLoader: (char: string, onLoad: (data: any) => void, onError: (err?: any) => void) => {
+      charDataLoader(char).then(onLoad).catch(onError);
+    }
   });
 
-  // 创建控制器
-  const controller = new HanziWriterController(writer, character);
+  const controller = new HanziWriterController(writer, character, charDataLoader);
 
-  // 创建控制面板
   const controlsPanel = document.createElement('div');
   controlsPanel.style.marginTop = '20px';
   controlsPanel.style.display = 'flex';
@@ -221,13 +202,11 @@ export function integrateWithMainview(character: string) {
   buttons.next.textContent = '下一笔 ▶';
   buttons.reset.textContent = '重置';
 
-  // 绑定事件
   buttons.prev.addEventListener('click', () => controller.previousStroke());
   buttons.play.addEventListener('click', () => controller.togglePlayPause());
   buttons.next.addEventListener('click', () => controller.nextStroke());
   buttons.reset.addEventListener('click', () => controller.reset());
 
-  // 添加样式
   Object.values(buttons).forEach(btn => {
     btn.style.padding = '8px 16px';
     btn.style.fontSize = '14px';
@@ -248,7 +227,6 @@ export function integrateWithMainview(character: string) {
     controlsPanel.appendChild(btn);
   });
 
-  // 添加状态显示
   const statusDisplay = document.createElement('div');
   statusDisplay.style.marginTop = '15px';
   statusDisplay.style.textAlign = 'center';
@@ -265,47 +243,42 @@ export function integrateWithMainview(character: string) {
     buttons.play.style.backgroundColor = isPlaying ? '#e8f5e9' : '#fff';
   });
 
-  // 添加到 DOM
   container.parentElement?.appendChild(controlsPanel);
   container.parentElement?.appendChild(statusDisplay);
 
   return { controller, buttons, statusDisplay };
 }
 
-/**
- * 示例 6: 带进度条的完整 UI
- */
-export function advancedUIExample() {
+export function advancedUIExample(charDataLoader: CharDataLoader) {
   const character = '练';
   const container = document.getElementById('character-container');
   if (!container) return;
 
-  // 创建 writer
   const writer = HanziWriter.create(container, character, {
     width: 300,
     height: 300,
     padding: 20,
     showOutline: true,
-    strokeAnimationSpeed: 2
+    strokeAnimationSpeed: 2,
+    charDataLoader: (char: string, onLoad: (data: any) => void, onError: (err?: any) => void) => {
+      charDataLoader(char).then(onLoad).catch(onError);
+    }
   });
 
-  const controller = new HanziWriterController(writer, character);
+  const controller = new HanziWriterController(writer, character, charDataLoader);
 
-  // 创建完整 UI
   const ui = document.createElement('div');
   ui.style.marginTop = '30px';
   ui.style.padding = '20px';
   ui.style.backgroundColor = '#f5f5f5';
   ui.style.borderRadius = '8px';
 
-  // 状态显示
   const status = document.createElement('div');
   status.style.fontSize = '18px';
   status.style.fontWeight = 'bold';
   status.style.marginBottom = '15px';
   ui.appendChild(status);
 
-  // 进度条
   const progressBar = document.createElement('div');
   progressBar.style.width = '100%';
   progressBar.style.height = '20px';
@@ -322,7 +295,6 @@ export function advancedUIExample() {
   progressBar.appendChild(progressFill);
   ui.appendChild(progressBar);
 
-  // 按钮组
   const buttonGroup = document.createElement('div');
   buttonGroup.style.display = 'flex';
   buttonGroup.style.gap = '10px';
@@ -340,7 +312,6 @@ export function advancedUIExample() {
   buttons.next.textContent = '下一笔 ▶';
   buttons.reset.textContent = '❌ 重置';
 
-  // 统一按钮样式
   Object.values(buttons).forEach(btn => {
     btn.style.padding = '10px 20px';
     btn.style.fontSize = '14px';
@@ -368,13 +339,11 @@ export function advancedUIExample() {
   ui.appendChild(buttonGroup);
   container.parentElement?.appendChild(ui);
 
-  // 绑定事件
   buttons.prev.addEventListener('click', () => controller.previousStroke());
   buttons.play.addEventListener('click', () => controller.togglePlayPause());
   buttons.next.addEventListener('click', () => controller.nextStroke());
   buttons.reset.addEventListener('click', () => controller.reset());
 
-  // 状态监听
   controller.onStrokeChange((index, total) => {
     status.textContent = `第 ${index + 1} / ${total} 笔`;
     const percentage = ((index + 1) / total) * 100;

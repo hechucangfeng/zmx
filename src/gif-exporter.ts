@@ -1,17 +1,13 @@
-import HanziWriter from 'hanzi-writer';
+type CharDataLoader = (char: string) => Promise<any>;
 
-/**
- * 生成笔顺动画 GIF
- * @param text 汉字文本（支持多个汉字）
- * @param options 配置选项
- */
 export async function generateGIF(
   text: string,
+  localCharDataLoader: CharDataLoader,
   options: {
     width?: number;
     height?: number;
-    frameDuration?: number;  // 每帧持续时间 ms
-    showTianZiGe?: boolean; // 是否显示田字格
+    frameDuration?: number;
+    showTianZiGe?: boolean;
   } = {}
 ): Promise<Blob> {
   const {
@@ -39,7 +35,7 @@ export async function generateGIF(
   // 逐字生成帧
   for (const char of chars) {
     // 加载字形数据
-      const charData = await HanziWriter.loadCharacterData(char, 'https://cdn.jsdelivr.net/npm/hanzi-writer-data@latest/');
+      const charData = await localCharDataLoader(char);
       const strokes = charData.strokes;
 
     // 第一帧：只显示田字格（可选）

@@ -1,4 +1,84 @@
 import HanziWriter from 'hanzi-writer';
+import { Electroview } from "electrobun/view";
+
+interface AppRPCSchema {
+	bun: {
+		requests: {
+			openFileDialog: {
+				params: {
+					canChooseFiles: boolean;
+					canChooseDirectory: boolean;
+					allowsMultipleSelection: boolean;
+					startingFolder: string;
+					allowedFileTypes: string;
+				};
+				response: string[];
+			};
+			saveFile: {
+				params: {
+					filePath: string;
+					blob: ArrayBuffer;
+				};
+				response: {
+					success: boolean;
+					filePath: string;
+					error?: string;
+				};
+			};
+			loadCharData: {
+				params: {
+					char: string;
+				};
+				response: {
+					success: boolean;
+					data?: {
+						strokes: string[];
+						medians: number[][][];
+					};
+					error?: string;
+				};
+			};
+		};
+		messages: {};
+	};
+	webview: {
+		requests: {};
+		messages: {};
+	};
+}
+
+const rpc = Electroview.defineRPC<AppRPCSchema>({
+	maxRequestTime: 30000,
+	handlers: {
+		requests: {},
+		messages: {},
+	},
+});
+
+const _electroview = new Electroview({ rpc });
+
+const charDataCache = new Map<string, any>();
+
+async function loadLocalCharData(char: string): Promise<any> {
+	if (charDataCache.has(char)) {
+		return charDataCache.get(char);
+	}
+
+	const result = await rpc.request.loadCharData({ char });
+
+	if (result.success && result.data) {
+		charDataCache.set(char, result.data);
+		return result.data;
+	}
+
+	throw new Error(result.error || `加载字符 "${char}" 数据失败`);
+}
+
+function charDataLoader(char: string, onLoad: (data: any) => void, onError: (err?: any) => void): void {
+	loadLocalCharData(char)
+		.then(onLoad)
+		.catch(onError);
+}
 
 // 获取 DOM 元素
 const container = document.getElementById('characters-container')!;
@@ -33,7 +113,7 @@ class StrokeNavigator {
   // 加载字符数据
   private async loadCharacterData(): Promise<void> {
     try {
-      this.charData = await HanziWriter.loadCharacterData(this.character);
+      this.charData = await loadLocalCharData(this.character);
       this.totalStrokes = this.charData.strokes.length;
       console.log(`字符 ${this.character} 共有 ${this.totalStrokes} 笔`);
       this.updateStrokeCounter();
@@ -391,7 +471,8 @@ function showStrokeOrder(text: string) {
       showCharacter: true, // 直接显示完整汉字
       strokeColor: '#333',
       outlineColor: '#ddd',
-      drawingColor: '#4a90d9'
+      drawingColor: '#4a90d9',
+      charDataLoader: charDataLoader
     });
     
     // 确保隐藏轮廓
@@ -594,7 +675,7 @@ exportSvgBtn.addEventListener('click', async () => {
     
     for (const char of chars) {
       try {
-        const charData = await HanziWriter.loadCharacterData(char);
+        const charData = await loadLocalCharData(char);
         charDatas.push(charData);
         
         // 创建一个容器来放置当前汉字的笔画图片
@@ -847,29 +928,7 @@ gridToggle.addEventListener('change', () => {
 
 // 页面加载完成后，默认创建一个文字容器
 window.addEventListener('DOMContentLoaded', () => {
-  // 默认显示"人"字
   showStrokeOrder('人');
-  // 设置输入框默认值
   charInput.value = '人';
-  
-  // 更新功能已集成到主进程
-  console.log('应用已配置更新功能');
-  console.log('更新检查将在应用启动时自动执行');
-  console.log('如有更新，将会在控制台显示相关信息');
-  console.log('当前配置的更新源：https://github.com/hechucangfeng/zmx');
-  console.log('');
-  console.log('更新功能说明：');
-  console.log('- 应用启动时会自动检查更新');
-  console.log('- 发现更新时会在控制台显示信息');
-  console.log('- 已配置为自动下载更新');
-  console.log('- 下载完成后需要手动安装');
-  console.log('- 更新检查间隔：1小时');
-  console.log('');
-  console.log('如需查看更新状态，请查看应用启动时的控制台输出');
-  console.log('实际部署时，请确保更新服务器可访问且包含正确的更新包');
-  console.log('');
-  console.log('版本信息：');
-  console.log('- 当前应用版本：0.0.1');
-  console.log('- 应用标识符：helloworld.electrobun.dev');
-  console.log('- 应用名称：hello-world');
+  console.log('怎么写 - 离线模式已启动');
 });
